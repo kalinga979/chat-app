@@ -1,0 +1,15 @@
+
+<script src="/socket.io/socket.io.js"></script>
+<script>
+  const socket = io(); // Connect
+
+  socket.on('connect', () => {
+    console.log('Connected to server');
+  });
+
+  socket.emit('chat message', 'Hello, everyone!');
+
+  socket.on('chat message', (msg) => {
+    console.log('Message received:', msg);
+  });
+</script>
