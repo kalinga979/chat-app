@@ -18,16 +18,16 @@ const port = process.env.PORT || 3000;
 
 
 io.on('connection', (socket) => {
-  console.log('A user connected');
+  console.log('User connected:', socket.id);
 
-  // Receive event from client
   socket.on('chat message', (msg) => {
-    // Broadcast to all connected clients
-    io.emit('chat message', msg);
+    // Broadcast to all other clients
+    socket.broadcast.emit('chat message', msg);
+    console.log(msg)
   });
 
   socket.on('disconnect', () => {
-    console.log('A user disconnected');
+    console.log('User disconnected:', socket.id);
   });
 });
 
@@ -44,6 +44,14 @@ try {
   console.log("Failed to connect to mongodb, Stopping server!")
   process.exit(1)
 }
+
+
+app.use((_req: Request, res: Response, next) => {
+  res.set('Cache-Control', 'no-store, no-cache, must-revalidate, private');
+  res.set('Pragma', 'no-cache');
+  res.set('Expires', '0');
+  next();
+});
 app.get("/", (_req: Request, res: Response) => {
   res.sendFile(path.join(__dirname, "views/index.html"));
 });

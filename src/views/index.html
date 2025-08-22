@@ -1,15 +1,41 @@
 
-<script src="/socket.io/socket.io.js"></script>
-<script>
-  const socket = io(); // Connect
+<!-- index.html -->
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Chat</title>
+</head>
+<body>
+  <input id="msg" autocomplete="off" />
+  <button onclick="sendMsg()">Send</button>
+  <ul id="messages"></ul>
 
-  socket.on('connect', () => {
-    console.log('Connected to server');
-  });
+  <script src="/socket.io/socket.io.js"></script>
+  <script>
+    const socket = io();
+    socket.on("connect" , ()=>{
+      console.log(socket.id);
+    })
 
-  socket.emit('chat message', 'Hello, everyone!');
+    function sendMsg() {
+      const input = document.getElementById('msg');
+      const msg = input.value;
+      //chat message is the event key
+      socket.emit('chat message', msg);
+      addMsg(`Me: ${msg}`);
+      input.value = '';
+    }
 
-  socket.on('chat message', (msg) => {
-    console.log('Message received:', msg);
-  });
-</script>
+    socket.on('chat message', function(msg) {
+      addMsg(`Stranger: ${msg}`);
+    });
+
+    function addMsg(msg) {
+      const li = document.createElement('li');
+      li.textContent = msg;
+      document.getElementById('messages').appendChild(li);
+    }
+  </script>
+</body>
+</html>
+
