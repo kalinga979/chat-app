@@ -17,6 +17,15 @@ export function signToken(data: object, key: string = SECRET_KEY) {
   }
 }
 
-export function verifyToken(_req: Request, _res: Response, next: NextFunction) {
-  next();
+export function verifyToken(req: Request, res: Response, next: NextFunction) {
+  try {
+    if (!req.cookie.jwt) {
+      return res.status(401).json({ message: "No Token Provided." });
+    }
+    res.decodedToken = jwt.verify(req.cookie.jwt, SECRET_KEY);
+    next();
+  } catch (err) {
+    console.log(err);
+    return res.status(401).json({ message: "Invalid or expired token" });
+  }
 }
