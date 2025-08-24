@@ -7,7 +7,7 @@ export const client = new MongoClient(uri, {
   maxPoolSize: 100,
   minPoolSize: 2,
 });
-
+const dbName = "chat";
 export async function startDb() {
   try {
     await client.connect();
@@ -34,10 +34,22 @@ export async function pingDb() {
 
 export async function insertData(inputData: object[], collectionName: string) {
   try {
-    const collection = client.db("chat").collection(collectionName);
+    const collection = client.db(dbName).collection(collectionName);
     const insertOperation = await collection.insertMany(inputData);
     console.log(insertOperation);
     return insertOperation;
+  } catch (err) {
+    console.log(err);
+    throw err;
+  }
+}
+
+export async function findOne(matchData: object, collectionName: string) {
+  try {
+    const collection = client.db(dbName).collection(collectionName);
+    const response = await collection.findOne(matchData);
+    console.log(response);
+    return response;
   } catch (err) {
     console.log(err);
     throw err;
