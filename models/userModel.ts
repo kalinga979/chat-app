@@ -3,6 +3,7 @@ export class User {
   name?: string;
   username?: string;
   password?: string;
+  collectionName: string = "users";
 
   constructor(data: { name?: string; username?: string; password?: string }) {
     if (!data.username) return;
@@ -20,7 +21,7 @@ export class User {
       const response = await mongo.insertData([{
         name: this.name,
         username: this.username,
-      }], "users");
+      }], this.collectionName);
 
       if (response.acknowledged) {
         return { message: "User credentials created." };
@@ -34,7 +35,7 @@ export class User {
     try {
       const existingUserName = await mongo.findOne(
         { usename: this.username },
-        "users",
+        this.collectionName,
       );
       if (existingUserName) {
         return true;
@@ -48,7 +49,7 @@ export class User {
     try {
       const existingUserName = await mongo.findOne(
         { usename: this.username },
-        "users",
+        this.collectionName,
       );
       if (existingUserName) {
         return existingUserName;
@@ -58,5 +59,3 @@ export class User {
     }
   }
 }
-const newUser = new User({});
-console.log(newUser);
