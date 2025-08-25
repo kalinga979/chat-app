@@ -4,7 +4,8 @@ export class User {
   username?: string;
   password?: string;
 
-  constructor(data: { name: string; username: string; password: string }) {
+  constructor(data: { name?: string; username?: string; password?: string }) {
+    if (!data.username) return;
     this.name = data.name;
     this.username = data.username;
     this.password = data.password;
@@ -29,14 +30,13 @@ export class User {
       throw err;
     }
   }
-
   async checkUserName(): Promise<boolean> {
     try {
       const existingUserName = await mongo.findOne(
         { usename: this.username },
         "users",
       );
-      if (existingUserName && existingUserName?.length > 0) {
+      if (existingUserName) {
         return true;
       } else return false;
     } catch (err) {
@@ -44,20 +44,19 @@ export class User {
     }
   }
 
-  async getUser(): Promise<object | boolean> {
+  async getUser(): Promise<object | null> {
     try {
       const existingUserName = await mongo.findOne(
         { usename: this.username },
         "users",
       );
-      if (existingUserName && existingUserName?.length > 0) {
-        return existingUserName[0];
-      } else return false;
+      if (existingUserName) {
+        return existingUserName;
+      } else return null;
     } catch (err) {
       throw err;
     }
   }
 }
-
-const newUser = new User();
-newUser.name = "hello";
+const newUser = new User({});
+console.log(newUser);
