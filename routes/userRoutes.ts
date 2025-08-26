@@ -1,6 +1,8 @@
 import Router from "express";
-import type { Request, Response } from "express";
 const router = Router();
 
-router.get("/register", (req: Request, res: Response) => {
-});
+import * as userController from "../controllers/userController.ts";
+
+router.get("/register", userController.register);
+
+export default router;
