@@ -11,7 +11,7 @@ const __dirname = path.dirname(__filename);
 
 const app = express();
 const httpServer = createServer(app);
-const port = process.env.PORT || 3000;
+const port = process.env.PORT || 3001;
 
 httpServer.listen(port, () => {
   console.log(`Server running on port ${port}`);
@@ -41,9 +41,8 @@ app.get("/", (_req: Request, res: Response) => {
   res.sendFile(path.join(__dirname, "views/index.html"));
 });
 
-import userRoutes from "./routes/userRoutes.ts";
 app.get("/register", (_req: Request, res: Response) => {
   res.sendFile(path.join(__dirname, "views/register.html"));
 });
-
-app.use(userRoutes);
+import userRouter from "./routes/userRoutes.ts";
+app.use("/user", userRouter);

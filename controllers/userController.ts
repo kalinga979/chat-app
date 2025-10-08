@@ -14,3 +14,15 @@ export async function register(req: Request, res: Response) {
     throw err;
   }
 }
+export async function authenticate(req: Request, res: Response) {
+  try {
+    const input = {
+      username: req.body.username,
+      password: req.body.password,
+    };
+    const response = await userService.authenticate(input);
+    res.send(response);
+  } catch (err) {
+    res.status(502).json({ "message": err.message });
+  }
+}

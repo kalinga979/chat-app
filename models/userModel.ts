@@ -10,8 +10,8 @@ export class User {
   constructor(data: { name?: string; username?: string; password?: string }) {
     if (!data.username) throw new Error("Username not specified");
     this.name = data.name;
-    this.username = data.username;
-    this.password = data.password;
+    this.username = data?.username;
+    this.password = data?.password;
   }
 
   async createUser(): Promise<{ message: string }> {
@@ -20,30 +20,34 @@ export class User {
 
       if (doesUserExists) return { message: "Username already exists" };
 
-      if (this.name && (typeof (this.name) != "string")) {
+      if (typeof this.name != "string") {
         throw new Error(`Invalid name value: ${this.name}`);
       }
 
-      if (this.password && (typeof (this.password) != "string")) {
+      if (typeof this.password != "string") {
         throw new Error(`Invalid password value: ${this.password}`);
       }
 
-      if (this.username && (typeof (this.username) != "string")) {
+      if (typeof this.username != "string") {
         throw new Error(`Invalid username value: ${this.username}`);
       }
 
-      const response = await mongo.insertData([{
-        name: this.name,
-        username: this.username,
-        password: this.password,
-      }], collectionName);
+      const response = await mongo.insertData(
+        [
+          {
+            name: this.name,
+            username: this.username,
+            password: this.password,
+          },
+        ],
+        collectionName,
+      );
 
       if (response.acknowledged) {
         this.userCreated = true;
         return { message: "User credentials created." };
       } else return { message: "Failed to create credentials" };
     } catch (err) {
-      console.log(err);
       throw err;
     }
   }
@@ -85,17 +89,4 @@ export class User {
       throw err;
     }
   }
-}
-
-try {
-  const newUser = new User({
-    name: "kalinga",
-    "password": "1234",
-    username: "kalinga2f1",
-  });
-  const response = await newUser.createUser();
-  console.log(response);
-  console.log(newUser.getUser());
-} catch (err) {
-  console.log(err);
 }
