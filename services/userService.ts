@@ -1,6 +1,6 @@
 import { User } from "../models/userModel.ts";
 import bcrypt from "bcrypt";
-// import * as jwtUtils from "../helpers/jwtUtils.ts";
+import * as jwtUtils from "../helpers/jwtUtils.ts";
 const salt = 10;
 export async function register(
   input: { name: string; username: string; password: string },
@@ -15,25 +15,22 @@ export async function register(
   }
 }
 
-export async function authenticate(
+export async function login(
   input: { username: string; password: string },
 ) {
   try {
     const userDetails = new User({ username: input.username });
     const userExists = await userDetails.getUser();
-    if (userExists == null) return { message: "User not found." };
+    if (userExists == null) throw new Error("User not found.");
     const checkPassword = await bcrypt.compareSync(
       input.password,
       userDetails.password,
     );
     if (checkPassword == true) {
-      // const token = jwtUtils.signToken(userExists);
-      // const decode = jwtUtils.verifyToken(token);
-      // console.log("Verified Token:", decode);
-      // console.log("Token generated:", token);
-      return userExists;
+      const token = jwtUtils.signToken(userExists);
+      return token;
     }
-    return { message: "Invalid Password!" };
+    throw new Error("Invalid Password!");
   } catch (err) {
     throw err;
   }

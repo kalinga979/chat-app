@@ -10,19 +10,21 @@ export async function register(req: Request, res: Response) {
     };
     const response = await userService.register(input);
     res.send(response);
-  } catch (err) {
+  } catch (err: unknown) {
+    res.status(422).json({ message: err.message });
     throw err;
   }
 }
-export async function authenticate(req: Request, res: Response) {
+export async function login(req: Request, res: Response) {
   try {
     const input = {
       username: req.body.username,
       password: req.body.password,
     };
-    const response = await userService.authenticate(input);
-    res.send(response);
-  } catch (err) {
-    res.status(502).json({ "message": err.message });
+    const token = await userService.login(input);
+    res.cookie("token", token, { httpOnly: false });
+    res.redirect("/dashboard");
+  } catch (err: unknown) {
+    res.status(401).json({ "message": err.message });
   }
 }
