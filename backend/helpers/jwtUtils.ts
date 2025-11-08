@@ -1,4 +1,4 @@
-import jwt from "jsonwebtoken";
+import jwt from "npm:jsonwebtoken@9.0.2";
 
 import process from "node:process";
 const SECRET_KEY = process.env.SECRET_KEY || "your_fallback_secret";

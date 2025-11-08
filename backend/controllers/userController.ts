@@ -25,6 +25,7 @@ export async function login(req: Request, res: Response) {
     res.cookie("token", token, { httpOnly: false });
     res.redirect("/dashboard");
   } catch (err: unknown) {
+    console.log(err);
     res.status(401).json({ "message": err.message });
   }
 }

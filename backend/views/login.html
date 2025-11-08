@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<title>Login Page</title>
+		<style>
+			body {
+				display: flex;
+				justify-content: center;
+				align-items: center;
+				height: 100vh;
+				margin: 0;
+				font-family: Arial, sans-serif;
+				background-color: #f0f2f5;
+			}
+			
+			.login-container {
+				background-color: #fff;
+				padding: 30px 40px;
+				border-radius: 8px;
+				box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+				width: 300px;
+				text-align: center;
+			}
+			
+			.login-container h2 {
+				margin-bottom: 20px;
+				color: #333;
+			}
+			
+			.login-container input {
+				width: 100%;
+				padding: 10px;
+				margin: 10px 0;
+				border-radius: 5px;
+				border: 1px solid #ccc;
+				font-size: 14px;
+			}
+			
+			.login-container button {
+				width: 100%;
+				padding: 10px;
+				border: none;
+				background-color: #007bff;
+				color: white;
+				font-size: 16px;
+				border-radius: 5px;
+				cursor: pointer;
+			}
+			
+			.login-container button:hover {
+				background-color: #0056b3;
+			}
+			
+			.error {
+				color: red;
+				font-size: 14px;
+				margin-top: 5px;
+				display: none;
+			}
+		</style>
+	</head>
+	<body>
+		<div class="login-container">
+			<h2>Login</h2>
+			<input type="text" id="username" placeholder="Username">
+			<input type="password" id="password" placeholder="Password">
+			<div class="error" id="errorMsg">Invalid credentials!</div>
+			<button onclick="login()">Login</button>
+		</div>
+
+		<script>
+			function login() {
+				const username = document.getElementById('username').value.trim();
+				const password = document.getElementById('password').value.trim();
+				const errorMsg = document.getElementById('errorMsg');
+				const response = fetch("http://localhost:3001/user/login",{
+					method:"POST",
+					headers: {
+						'Content-Type': 'application/json' // Inform the server that the body contains JSON
+						},
+						body:JSON.stringify({
+							username:username,
+							password:password
+						}
+						)
+					}
+					).then(response => {
+						if (response.redirected) {
+							window.location.href = response.url;
+							} else {
+								return response.json();
+							}
+							})
+							.then(data => {
+								console.log(data);
+								})
+								.catch(err => console.error(err));
+								
+							}
+		</script>
+	</body>
+</html>

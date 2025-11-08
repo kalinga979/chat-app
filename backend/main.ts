@@ -1,16 +1,20 @@
 import express from "express";
 import type { NextFunction, Request, Response } from "express";
-import { startDb } from "./models/mongo.ts";
+import { connectToDb } from "./models/mongo.ts";
 import { createServer } from "node:http";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import process from "node:process";
-
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
+import { Server } from "socket.io";
+import userRouter from "./routes/userRoutes.ts";
+import { chatSocket } from "./sockets/chat.socket.ts";
 
 const app = express();
 const httpServer = createServer(app);
+
+const io = new Server(httpServer);
+
+chatSocket(io);
 const port = process.env.PORT || 3001;
 
 httpServer.listen(port, () => {
@@ -19,7 +23,7 @@ httpServer.listen(port, () => {
 
 // Connect to Mongo DB
 try {
-  await startDb();
+  await connectToDb();
 } catch (err) {
   console.error(err);
   console.log("Failed to connect to mongodb, Stopping server!");
@@ -37,6 +41,9 @@ app.use((_req: Request, res: Response, next: NextFunction) => {
   next();
 });
 
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
 app.get("/", (_req: Request, res: Response) => {
   res.sendFile(path.join(__dirname, "views/index.html"));
 });
@@ -44,5 +51,11 @@ app.get("/", (_req: Request, res: Response) => {
 app.get("/register", (_req: Request, res: Response) => {
   res.sendFile(path.join(__dirname, "views/register.html"));
 });
-import userRouter from "./routes/userRoutes.ts";
+app.get("/dashboard", (_req: Request, res: Response) => {
+  res.sendFile(path.join(__dirname, "views/dashboard.html"));
+});
+app.get("/login", (_req: Request, res: Response) => {
+  res.sendFile(path.join(__dirname, "views/login.html"));
+});
+
 app.use("/user", userRouter);

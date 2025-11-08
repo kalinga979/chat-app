@@ -8,7 +8,7 @@ export const client = new MongoClient(uri, {
   minPoolSize: 2,
 });
 const dbName = "chat";
-export async function startDb() {
+export async function connectToDb() {
   try {
     await client.connect();
     console.log("Connected To mongodb");
@@ -48,6 +48,16 @@ export async function findOne(matchData: object, collectionName: string) {
     const collection = client.db(dbName).collection(collectionName);
     const response = await collection.findOne(matchData);
     return response;
+  } catch (err) {
+    console.log(err);
+    throw err;
+  }
+}
+export async function closeConnection() {
+  try {
+    await client.close(true);
+    console.log("Connection to MongoDb closed");
+    return;
   } catch (err) {
     console.log(err);
     throw err;
