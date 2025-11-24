@@ -1,7 +1,7 @@
 import * as userService from "../services/userService.ts";
 import type { Request, Response } from "express";
 
-export async function register(req: Request, res: Response) {
+export async function register(req: Request, res: Response): Promise<void> {
   try {
     const input = {
       name: req.body.name,
@@ -15,7 +15,7 @@ export async function register(req: Request, res: Response) {
     throw err;
   }
 }
-export async function login(req: Request, res: Response) {
+export async function login(req: Request, res: Response): Promise<void> {
   try {
     const input = {
       username: req.body.username,

@@ -45,7 +45,8 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 app.get("/", (_req: Request, res: Response) => {
-  res.sendFile(path.join(__dirname, "views/index.html"));
+  // res.sendFile(path.join(__dirname, "views/index.html"));
+  res.redirect("/login");
 });
 
 app.get("/register", (_req: Request, res: Response) => {

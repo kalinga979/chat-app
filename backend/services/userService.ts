@@ -4,7 +4,7 @@ import * as jwtUtils from "../helpers/jwtUtils.ts";
 const salt = 10;
 export async function register(
   input: { name: string; username: string; password: string },
-) {
+): Promise<{ message: string }> {
   try {
     input.password = await bcrypt.hashSync(input.password, salt);
     const newUser = new User(input);
@@ -17,7 +17,7 @@ export async function register(
 
 export async function login(
   input: { username: string; password: string },
-) {
+): Promise<string> {
   try {
     const userDetails = new User({ username: input.username });
     const userExists = await userDetails.getUser();
